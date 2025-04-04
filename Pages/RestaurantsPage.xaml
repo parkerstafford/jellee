@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Jellee.Pages.RestaurantsPage"
+             Title="Restaurants Near You"
+             xmlns:converters="clr-namespace:Jellee.Converters;assembly=Jellee"
+             BackgroundColor="White">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" 
+              BackgroundColor="#f48b1e"
+              Padding="16"
+              ColumnDefinitions="*,Auto">
+            <Label Grid.Column="0"
+                   Text="Restaurants Near You" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="White" 
+                   VerticalOptions="Center" />
+
+        </Grid>
+        <ScrollView Grid.Row="1" Padding="16">
+            <StackLayout Spacing="16">
+                <StackLayout IsVisible="{Binding IsLoading}" 
+                             HorizontalOptions="Center" 
+                             VerticalOptions="CenterAndExpand">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}" />
+                    <Label Text="Finding restaurants..." 
+                           TextColor="#000035"
+                           HorizontalOptions="Center"
+                           Margin="0,20,0,0" />
+                </StackLayout>
+                <CollectionView ItemsSource="{Binding Restaurants}"
+                                IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="0,0,0,16"
+                                   CornerRadius="12"
+                                   HasShadow="True"
+                                   Padding="0"
+                                   BorderColor="Transparent">
+                                <Label Text="{Binding Name}" />
+
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRestaurantTapped"/>
+                                </Frame.GestureRecognizers>
+
+                                <Grid RowDefinitions="200,Auto">
+                                    <Image Grid.Row="0"
+                                           Source="{Binding PhotoUrl}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="200" />
+
+                                    <StackLayout Grid.Row="1" Padding="16">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Name}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#333333" />
+
+                                            <Frame Grid.Column="1"
+                                                   BackgroundColor="#FFF9F1"
+                                                   Padding="6"
+                                                   CornerRadius="12"
+                                                   HasShadow="False">
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="★"
+                                                           TextColor="#8F0A0A"
+                                                           FontSize="16"
+                                                           VerticalOptions="Center" />
+                                                    <Label Text="{Binding OverallRating.Average, StringFormat='{0:F1}'}"
+                                                           TextColor="#FF6B35"
+                                                           FontAttributes="Bold"
+                                                           VerticalOptions="Center" />
+                                                </StackLayout>
+                                            </Frame>
+                                        </Grid>
+
+                                        <FlexLayout Direction="Row" AlignItems="Center">
+                                            <Label Text="{Binding CuisineType}"
+                                                   TextColor="#666666"
+                                                   FontSize="14" />
+                                            <Label Text=" • "
+                                                   TextColor="#666666" />
+                                            <Label Text="{Binding Address}"
+                                                   TextColor="#666666"
+                                                   FontSize="14" />
+                                        </FlexLayout>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
